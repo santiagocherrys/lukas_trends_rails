@@ -12,11 +12,11 @@ class Admin::UsersController < ApplicationController
 
     if user.save
       respond_to do |format|
-        format.html { redirect_to admin_users_path, notice: 'Subscription type changed successfully' }
+        format.html { redirect_to admin_users_path, notice: 'El tipo de suscripcion ha cambiado exitosamente ' }
       end
     else
       respond_to do |format|
-        format.html { redirect_to admin_users_path, alert: 'Failed to change subscription type' }
+        format.html { redirect_to admin_users_path, alert: 'Fallo al cambiar el tipo de suscripcion' }
       end
     end
   end
