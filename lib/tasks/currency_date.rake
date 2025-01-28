@@ -77,10 +77,10 @@ namespace :histories do
       date = Date.today
 
       # Format the date as YYYY-MM_DD
-      formatted_date = date.strftime("%Y-%m_%d")
+      formatted_date = date.strftime("%Y-%m-%d")
 
       currency_model = Currency.find_by(symbol: currency)
-      History.create!(currency_id: currency_model.id, date: formatted_date, lukas_value: money[index].values.first)
+      History.create!(currency_id: currency_model.id, date: formatted_date.to_s, lukas_value: money[index].values.first)
 
     end
 
