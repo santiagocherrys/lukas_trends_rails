@@ -23,8 +23,14 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def after_sign_in_path_for(resource_or_scope)
+    # Determina el path basado en si el usuario es admin o no
     default_path = current_user.ADMIN? ? admin_users_path : root_path
-    stored_location_for(resource_or_scope) || default_path
+
+    # Si hay una ubicación almacenada, redirige a esa ubicación, sino utiliza el path por defecto
+    path = stored_location_for(resource_or_scope) || default_path
+
+    # Le añadimos el hash para disparar el reload en la vista
+    path + '#reload'
   end
 
   # protected

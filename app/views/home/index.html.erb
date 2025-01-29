@@ -10,6 +10,28 @@
     <div class="chart">
       <div class="chart-placeholder">
       </div>
+      <!-- Select Inputs Below Chart -->
+      <div class="chart-controls mt-4 p-4 bg-white rounded-lg shadow-md border border-gray-300 flex gap-4">
+        <div>
+          <label for="periodId" class="block text-sm font-medium text-gray-700">Select Period</label>
+          <select id="periodId" class="mt-1 block w-full px-4 py-2 bg-gray-50 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="day">Day</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+            <option value="week">Week</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
+          <input id="startDate" type="date" class="mt-1 block w-full px-4 py-2 bg-gray-50 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label for="endDate" class="block text-sm font-medium text-gray-700">End Date</label>
+          <input id="endDate" type="date" class="mt-1 block w-full px-4 py-2 bg-gray-50 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+      </div>
     </div>
 
     <!-- Search and Info Section -->
@@ -24,8 +46,7 @@
         <%= text_field_tag :currency, nil,
             placeholder: "What currency would you like to forecast?",
             class: "w-full border rounded-lg p-3 pr-20" %>
-        <%= button_tag type: 'submit', 
-class: 'absolute inset-y-0 right-0 flex items-center justify-center bg-black text-white p-2 rounded-r-lg' do %>
+        <%= button_tag type: 'submit', class: 'absolute inset-y-0 right-0 flex items-center justify-center bg-black text-white p-2 rounded-r-lg' do %>
           <%= image_tag 'search.png', class: 'h-5 w-5' %>
         <% end %>
       <% end %>
@@ -35,22 +56,60 @@ class: 'absolute inset-y-0 right-0 flex items-center justify-center bg-black tex
         </p>
       </div>
     </div>
-  </div>
-
+</div>
 <!-- Footer -->
 <footer class="absolute text-right bottom-0 bg-blue-400 px-4 py-2">
   © 2025 LukasTrend. All rights reserved.
 </footer>
 </div>
 
+<!-- Logic -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", async function () {
     var chartDom = document.querySelector('.chart-placeholder');
+    if (!chartDom) {
+      console.error("El contenedor del gráfico no se ha encontrado.");
+      return;
+    }
+
+    // Añadir loader antes de iniciar la carga
+    const loader = document.createElement("div");
+    loader.className = "loader";
+    var chartContainer = document.querySelector('.chart');
+    chartContainer.appendChild(loader);
+    
     var myChart = echarts.init(chartDom);
+
+    async function fetchHistoricalData(currency, startDate, endDate, periodId) {
+      const apiUrl = `http://127.0.0.1:3000/api/v1/data/history2?currency=${currency}&period_id=${periodId}&time_start=${startDate}&time_end=${endDate}`;
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        return { dates: data.dates, values: data.values };
+      } catch (error) {
+        console.error("Error fetching historical data:", error);
+        return { dates: [], values: [] }; 
+      }
+    }
+
+    const startDate = "2020-01-24";
+    const endDate = "2025-01-24";
+    const periodId = "year";
+
+    const { dates, values: USD } = await fetchHistoricalData('COP', startDate, endDate, periodId);
+    const { dates: d1, values: EUR } = await fetchHistoricalData('EUR', startDate, endDate, periodId);
+    const { dates: d2, values: rawBTC } = await fetchHistoricalData('BTC', startDate, endDate, periodId);
+    const { dates: d3, values: rawETH } = await fetchHistoricalData('ETH', startDate, endDate, periodId);
+
+    // Dividir cada valor entre 1000
+    const BTC = rawBTC.map(value => value / 1000);
+    const ETH = rawETH.map(value => value / 1000);
+
+    if (loader.parentElement) loader.remove();
+
     var option = {
-      color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
-      title: {
-      },
+      color: ['#00DDFF', '#FFBF00', '#37A2FF', '#FF0087', '#FFBF00'],
+      title: {},
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -61,11 +120,11 @@ class: 'absolute inset-y-0 right-0 flex items-center justify-center bg-black tex
         }
       },
       legend: {
-        data: ['USD', 'EUR', 'BTC', 'ETH', 'USDT']
+        data: ['USD', 'EUR', 'BTC', 'ETH']
       },
       toolbox: {
         feature: {
-          saveAsImage: {name: "Las_Lukas_Forecast"}
+          saveAsImage: { name: "Las_Lukas_Forecast" }
         }
       },
       grid: {
@@ -78,147 +137,155 @@ class: 'absolute inset-y-0 right-0 flex items-center justify-center bg-black tex
         {
           type: 'category',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: dates
         }
       ],
       yAxis: [
         {
-          type: 'value'
+          type: 'value',
+          name: 'Monedas [lukas]', 
+          position: 'left',
+          nameLocation: 'middle', 
+          nameRotate: 90, 
+          nameGap: 20,
+          nameTextStyle: {
+            fontSize: 12, 
+            align: 'center' 
+          },
+          axisLabel: {
+            formatter: '{value}'
+          }
+        },
+        {
+          type: 'value',
+          name: 'Criptomonedas [palos]', 
+          position: 'right',
+          nameLocation: 'middle', 
+          nameRotate: 90, 
+          nameGap: 40, 
+          nameTextStyle: {
+            fontSize: 12, 
+            align: 'center' 
+          },
+          axisLabel: {
+            formatter: '{value}'
+          }
         }
       ],
       series: [
         {
-          name: 'USD',
+          name: 'EUR',
           type: 'line',
-          stack: 'Total',
           smooth: true,
-          lineStyle: { width: 0 },
-          showSymbol: false,
           areaStyle: {
             opacity: 0.8,
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgb(128, 255, 165)' },
-              { offset: 1, color: 'rgb(1, 191, 236)' }
+              { offset: 0, color: 'rgb(0, 221, 255)' },
+              { offset: 1, color: 'rgb(77, 119, 255)' }
             ])
           },
           emphasis: { focus: 'series' },
-          data: [140, 232, 101, 264, 90, 340, 250]
+          yAxisIndex: 0, // Primer eje Y
+          data: EUR
         },
-        ,
-    {
-      name: 'EUR',
-      type: 'line',
-      stack: 'Total',
-      smooth: true,
-      lineStyle: {
-        width: 0
-      },
-      showSymbol: false,
-      areaStyle: {
-        opacity: 0.8,
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgb(0, 221, 255)'
+        {
+          name: 'USD',
+          type: 'line',
+          smooth: true,
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: 'rgb(255, 191, 0)'
+              },
+              {
+                offset: 1,
+                color: 'rgb(224, 62, 76)'
+              }
+            ])
           },
-          {
-            offset: 1,
-            color: 'rgb(77, 119, 255)'
-          }
-        ])
-      },
-      emphasis: {
-        focus: 'series'
-      },
-      data: [120, 282, 111, 234, 220, 340, 310]
-    },
-    {
-      name: 'BTC',
-      type: 'line',
-      stack: 'Total',
-      smooth: true,
-      lineStyle: {
-        width: 0
-      },
-      showSymbol: false,
-      areaStyle: {
-        opacity: 0.8,
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgb(55, 162, 255)'
+          emphasis: { focus: 'series' },
+          yAxisIndex: 0, // Primer eje Y
+          data: USD
+        },
+        {
+          name: 'BTC',
+          type: 'line',
+          smooth: true,
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgb(55, 162, 255)' },
+              { offset: 1, color: 'rgb(116, 21, 219)' }
+            ])
           },
-          {
-            offset: 1,
-            color: 'rgb(116, 21, 219)'
-          }
-        ])
-      },
-      emphasis: {
-        focus: 'series'
-      },
-      data: [320, 132, 201, 334, 190, 130, 220]
-    },
-    {
-      name: 'ETH',
-      type: 'line',
-      stack: 'Total',
-      smooth: true,
-      lineStyle: {
-        width: 0
-      },
-      showSymbol: false,
-      areaStyle: {
-        opacity: 0.8,
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgb(255, 0, 135)'
+          emphasis: { focus: 'series' },
+          yAxisIndex: 1, // Segundo eje Y
+          data: BTC
+        },
+        {
+          name: 'ETH',
+          type: 'line',
+          smooth: true,
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgb(255, 0, 135)' },
+              { offset: 1, color: 'rgb(135, 0, 157)' }
+            ])
           },
-          {
-            offset: 1,
-            color: 'rgb(135, 0, 157)'
-          }
-        ])
-      },
-      emphasis: {
-        focus: 'series'
-      },
-      data: [220, 402, 231, 134, 190, 230, 120]
-    },
-    {
-      name: 'USDT',
-      type: 'line',
-      stack: 'Total',
-      smooth: true,
-      lineStyle: {
-        width: 0
-      },
-      showSymbol: false,
-      label: {
-        show: true,
-        position: 'top'
-      },
-      areaStyle: {
-        opacity: 0.8,
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgb(255, 191, 0)'
-          },
-          {
-            offset: 1,
-            color: 'rgb(224, 62, 76)'
-          }
-        ])
-      },
-      emphasis: {
-        focus: 'series'
-      },
-      data: [220, 302, 181, 234, 210, 290, 150]
-    }
+          emphasis: { focus: 'series' },
+          yAxisIndex: 1, // Segundo eje Y
+          data: ETH
+        }
       ]
     };
+
+
     myChart.setOption(option);
+
+     // Attach event listeners for the new inputs
+        document.querySelector("#periodId").addEventListener("change", handleUpdate);
+        document.querySelector("#startDate").addEventListener("change", handleUpdate);
+        document.querySelector("#endDate").addEventListener("change", handleUpdate);
+
+        async function handleUpdate() {
+          const periodId = document.querySelector("#periodId").value;
+          const startDate = document.querySelector("#startDate").value || "2024-01-24";
+          const endDate = document.querySelector("#endDate").value || "2025-01-24";
+
+          // Show loader before fetching
+          const loader = document.createElement("div");
+          loader.className = "loader absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50";
+          chartDom.appendChild(loader);
+
+          const { dates, values: USD } = await fetchHistoricalData('COP', startDate, endDate, periodId);
+          const { dates: d1, values: EUR } = await fetchHistoricalData('EUR', startDate, endDate, periodId);
+          const { dates: d2, values: BTC } = await fetchHistoricalData('BTC', startDate, endDate, periodId);
+          const { dates: d3, values: ETH } = await fetchHistoricalData('ETH', startDate, endDate, periodId);
+
+          if (loader.parentElement) loader.remove();
+
+          myChart.setOption({
+            xAxis: [{ data: dates }],
+            series: [
+              { data: EUR },
+              { data: USD },
+              { data: BTC },
+              { data: ETH }
+            ]
+          });
+        }
   });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    if (window.location.hash === "#reload") {
+      // Elimina el hash #reload para evitar loops de redirección
+      window.history.replaceState({}, document.title, window.location.pathname);
+      // Recarga la página
+      window.location.reload();
+    }
+  });
+
 </script>

@@ -1,59 +1,102 @@
-require 'date'
-
 class Api::V1::DataController < ApplicationController
   def history
-    # Parámetros de entrada
-    @currency = params[:currency].nil? ? "BTC" : params[:currency]
-    @period_id = params[:period_id].nil? ? "year" : params[:period_id]
-    @time_start = params[:time_start].nil? ? "2020-01-01" : params[:time_start]
-    @time_end = params[:time_end].nil? ? "2024-12-31" : params[:time_end]
+    @currency = params[:currency].presence || 'BTC'
+    @period_id = params[:period_id].presence || 'year'
+    @time_start = params[:time_start].presence || '2020-01-01'
+    @time_end = params[:time_end].presence || Date.today.to_s
 
     # Validar que time_end no sea mayor a hoy
     today = Date.today
     end_date = Date.parse(@time_end)
     if end_date > today
-      render json: { error: "time_end no puede ser mayor a la fecha actual." }, status: 400
+      render json: { error: 'time_end no puede ser mayor a la fecha actual.' }, status: :bad_request
       return
     end
 
-    # Determinar el período de tiempo
-    @period_aux = case @period_id
-                  when "day" then "1DAY"
-                  when "week" then "7DAY"
-                  when "month" then "1MTH"
-                  when "year" then "1YRS"
-                  end
-
     # Convertir time_start y time_end a objetos Date
     start_date = Date.parse(@time_start)
-    end_date = Date.parse(@time_end)
+    end_date = [end_date, today].min
 
-    # Generar un array de fechas de acuerdo al período solicitado
-    @result = []
-    current_date = start_date
+    # Determinar intervalo en días
+    interval = case @period_id
+               when 'day' then 1
+               when 'week' then 7
+               when 'month' then 30
+               when 'year' then 365
+               else 1
+               end
 
-    while current_date <= end_date
-      # Buscar los registros correspondientes a la fecha actual
-      response = History.where(currency_id: Currency.find_by(name: @currency).id)
-                        .where(date: current_date)
-
-      # Agregar los registros encontrados a la respuesta
-      @result.concat(response)
-
-      # Incrementar la fecha según el período
-      case @period_id
-      when "day"
-        current_date += 1 # Un día
-      when "week"
-        current_date += 7 # Sumar 7 días para la siguiente semana
-      when "month"
-        current_date = current_date.next_month # Sumar 1 mes
-      when "year"
-        current_date = current_date.next_year # Sumar 1 año
-      end
+    # Generar los datos
+    currency = Currency.find_by(name: @currency)
+    if currency.nil?
+      render json: { error: 'Moneda no encontrada' }, status: :not_found
+      return
     end
 
-    # Retornar los registros encontrados como JSON
-    puts @result
+    history_data = []
+    dates = []
+
+    (start_date..end_date).step(interval).each do |date|
+      history = History.find_by(currency_id: currency.id, date: date)
+      history_data << (history&.lukas_value || 0)
+      dates << date.strftime('%Y-%m-%d')
+    end
+
+    render json: { dates: dates, values: history_data }
+  end
+
+  def history2
+    @currency = params[:currency].presence || 'BTC'
+    @period_id = params[:period_id].presence || 'year'
+    @time_start = params[:time_start].presence || '2020-01-01'
+    @time_end = params[:time_end].presence || Date.today.to_s
+
+    # Validate that time_end is not greater than today
+    today = Date.today
+    end_date = Date.parse(@time_end)
+    if end_date > today
+      render json: { error: 'time_end cannot be greater than today.' }, status: :bad_request
+      return
+    end
+
+    # Parse time_start and time_end as Date objects
+    start_date = Date.parse(@time_start)
+    end_date = [end_date, today].min
+
+    # Determine interval in days
+    interval = case @period_id
+               when 'day' then 1
+               when 'week' then 7
+               when 'month' then 30
+               when 'year' then 365
+               else 1
+               end
+
+    # Fetch the currency
+    currency = Currency.find_by(name: @currency)
+    if currency.nil?
+      render json: { error: 'Currency not found' }, status: :not_found
+      return
+    end
+
+    # Fetch all history records in the date range with a single query
+    histories = History
+                .where(currency_id: currency.id, date: start_date..end_date)
+                .order(:date)
+
+    # Organize data into the desired format
+    history_map = histories.index_by(&:date) # Create a hash { date => history }
+    dates = (start_date..end_date).step(interval).map do |date|
+      {
+        date: date.strftime('%Y-%m-%d'),
+        value: history_map[date]&.lukas_value || 0
+      }
+    end
+
+    # Prepare the JSON response
+    render json: {
+      dates: dates.map { |entry| entry[:date] },
+      values: dates.map { |entry| entry[:value] }
+    }
   end
 end
