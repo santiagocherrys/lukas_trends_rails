@@ -278,4 +278,14 @@
           });
         }
   });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    if (window.location.hash === "#reload") {
+      // Elimina el hash #reload para evitar loops de redirección
+      window.history.replaceState({}, document.title, window.location.pathname);
+      // Recarga la página
+      window.location.reload();
+    }
+  });
+
 </script>
