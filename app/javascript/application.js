@@ -36,3 +36,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   chart.setOption(option);
 });
+
+//= require banner
