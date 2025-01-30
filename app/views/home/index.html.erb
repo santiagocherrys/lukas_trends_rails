@@ -41,7 +41,6 @@
         Your browser does not support the video tag.
       </video>
 
-
       <%= form_with method: :post, class: "relative w-full" do %>
         <%= text_field_tag :currency, nil,
             placeholder: "What currency would you like to forecast?",
@@ -77,18 +76,18 @@
     loader.className = "loader";
     var chartContainer = document.querySelector('.chart');
     chartContainer.appendChild(loader);
-    
+
     var myChart = echarts.init(chartDom);
 
     async function fetchHistoricalData(currency, startDate, endDate, periodId) {
-      const apiUrl = `http://127.0.0.1:3000/api/v1/data/history2?currency=${currency}&period_id=${periodId}&time_start=${startDate}&time_end=${endDate}`;
+      const apiUrl = `http://<%= request.host %>:3000/api/v1/data/history2?currency=${currency}&period_id=${periodId}&time_start=${startDate}&time_end=${endDate}`;
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
         return { dates: data.dates, values: data.values };
       } catch (error) {
         console.error("Error fetching historical data:", error);
-        return { dates: [], values: [] }; 
+        return { dates: [], values: [] };
       }
     }
 
@@ -143,14 +142,14 @@
       yAxis: [
         {
           type: 'value',
-          name: 'Monedas [lukas]', 
+          name: 'Monedas [lukas]',
           position: 'left',
-          nameLocation: 'middle', 
-          nameRotate: 90, 
+          nameLocation: 'middle',
+          nameRotate: 90,
           nameGap: 20,
           nameTextStyle: {
-            fontSize: 12, 
-            align: 'center' 
+            fontSize: 12,
+            align: 'center'
           },
           axisLabel: {
             formatter: '{value}'
@@ -158,14 +157,14 @@
         },
         {
           type: 'value',
-          name: 'Criptomonedas [palos]', 
+          name: 'Criptomonedas [palos]',
           position: 'right',
-          nameLocation: 'middle', 
-          nameRotate: 90, 
-          nameGap: 40, 
+          nameLocation: 'middle',
+          nameRotate: 90,
+          nameGap: 40,
           nameTextStyle: {
-            fontSize: 12, 
-            align: 'center' 
+            fontSize: 12,
+            align: 'center'
           },
           axisLabel: {
             formatter: '{value}'
@@ -241,7 +240,6 @@
         }
       ]
     };
-
 
     myChart.setOption(option);
 
