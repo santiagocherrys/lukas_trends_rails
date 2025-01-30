@@ -81,15 +81,22 @@ class Api::V1::DataController < ApplicationController
 
     # Fetch all history records in the date range with a single query
     histories = History
-                .where(currency_id: currency.id, date: start_date..end_date)
-                .order(:date)
+                  .where(currency_id: currency.id, date: start_date..end_date)
+                  .order(:date)
 
     # Organize data into the desired format
     history_map = histories.index_by(&:date) # Create a hash { date => history }
     dates = (start_date..end_date).step(interval).map do |date|
+      history_obj = history_map[date]
+      lukas_value = case currency.symbol
+                    when 'BTC', 'ETH'
+                      (history_obj&.lukas_value&./ 1000.0) || 0
+                    else
+                      history_obj&.lukas_value || 0
+                    end
       {
         date: date.strftime('%Y-%m-%d'),
-        value: history_map[date]&.lukas_value || 0
+        value: lukas_value
       }
     end
 
