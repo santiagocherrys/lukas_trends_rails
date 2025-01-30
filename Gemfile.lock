@@ -390,10 +390,10 @@ DEPENDENCIES
   faraday
   importmap-rails
   jbuilder
+  nokogiri
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection (~> 1.0)
-  nokogiri
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.2.2, >= 7.2.2.1)
