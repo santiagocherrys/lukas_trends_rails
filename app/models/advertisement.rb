@@ -1,0 +1,2 @@
+class Advertisement < ApplicationRecord
+end
