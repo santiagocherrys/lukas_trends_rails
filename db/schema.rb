@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_27_235439) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_31_180010) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +53,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_235439) do
     t.string "uid"
     t.string "avatar_url"
     t.string "provider"
+    t.datetime "remember_created_at"
   end
 
   add_foreign_key "chats", "users"
