@@ -10,5 +10,5 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  setInterval(refreshBanner, 1 * 60 * 1000); // Cambia cada 5 minutos
+  setInterval(refreshBanner, 5 * 60 * 1000); // Cambia cada 5 minutos
 });

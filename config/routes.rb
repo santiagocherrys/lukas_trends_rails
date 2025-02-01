@@ -14,6 +14,4 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   get 'banner', to: 'banners#show'
-
-  root 'test#index'
 end
