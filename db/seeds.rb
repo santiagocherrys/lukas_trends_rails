@@ -12,7 +12,7 @@ Advertisement.create([
                        {
                          title: 'Aprende todo sobre criptomonedas y a como invertir en ellas',
                          image_url: 'https://res.cloudinary.com/dlxtquqy5/image/upload/v1738267382/Invierte_e_criptomonedas_nvxmtx.jpg',
-                         link: 'https://www.finect.com/usuario/Josetrecet/articulos/invertir-criptodivisass'
+                         link: 'https://www.finect.com/usuario/Josetrecet/articulos/invertir-criptodivisas'
                        },
                        {
                          title: 'Curso Gratis: Potencia tu negocio en Finanzas e Inversión con "MinTIC" e "iNNpulsa"',

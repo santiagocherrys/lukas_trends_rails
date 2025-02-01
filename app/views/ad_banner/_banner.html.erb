@@ -1,9 +1,17 @@
-<% if !user_signed_in? && (banner = Advertisement.random_banner) %>
-  <div class="ad-banner">
+    <%# <a href="<%= banner.link " target="_blank" rel="noopener noreferrer"> %>
+      <%# <div class="ad-content"> %>
+        <%# <h3 class="ad-title"><%= banner.title </h3> %>
+        <%# <img src="<%= banner.image_url " alt="Publicidad" width="1280" height="68"> %>
+      <%# </div> %>
+    <%# </a> %>
+
+
+<% if banner = Advertisement.random_banner %>
+  <div class="ad-banner" id="ad-banner">
     <a href="<%= banner.link %>" target="_blank" rel="noopener noreferrer">
       <div class="ad-content">
-        <h3 class="ad-title"><%= banner.title %></h3>
-        <img src="<%= banner.image_url %>" alt="Publicidad" width="1280" height="68">
+        <img id="ad-image" src="<%= banner.image_url %>" alt="Publicidad">
+        <h3 id="ad-title" class="ad-title"><%= banner.title %></h3>
       </div>
     </a>
   </div>
