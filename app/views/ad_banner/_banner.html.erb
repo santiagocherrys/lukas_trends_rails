@@ -5,14 +5,15 @@
       <%# </div> %>
     <%# </a> %>
 
-
-<% if banner = Advertisement.random_banner %>
-  <div class="ad-banner" id="ad-banner">
-    <a href="<%= banner.link %>" target="_blank" rel="noopener noreferrer">
-      <div class="ad-content">
-        <img id="ad-image" src="<%= banner.image_url %>" alt="Publicidad">
-        <h3 id="ad-title" class="ad-title"><%= banner.title %></h3>
-      </div>
-    </a>
-  </div>
+<% if !user_signed_in? %>  <%# Verifica si el usuario esta registrado %>
+  <% if banner = Advertisement.random_banner %>
+    <div class="ad-banner" id="ad-banner">
+      <a href="<%= banner.link %>" target="_blank" rel="noopener noreferrer">
+        <div class="ad-content">
+          <img id="ad-image" src="<%= banner.image_url %>" alt="Publicidad">
+          <h3 id="ad-title" class="ad-title"><%= banner.title %></h3>
+        </div>
+      </a>
+    </div>
+  <% end %>
 <% end %>

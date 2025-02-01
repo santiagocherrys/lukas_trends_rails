@@ -31,6 +31,4 @@ Rails.application.routes.draw do
   root 'home#index'
 
   get 'banner', to: 'banners#show'
-
-  root 'test#index'
 end
