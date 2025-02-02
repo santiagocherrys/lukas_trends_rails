@@ -4,19 +4,19 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.2]
   def self.up
     change_table :users do |t|
       ## Database authenticatable
-      # t.string :email,              null: false, default: '', limit: 100
-      # t.string :encrypted_password, null: false, default: '', limit: 70
-      # t.string :full_name, limit: 80
+      t.string :email,              null: false, default: '', limit: 100
+      t.string :encrypted_password, null: false, default: '', limit: 70
+      t.string :full_name, limit: 80
       t.string :uid
       t.string :avatar_url
       t.string :provider
 
       ## Recoverable
-      # t.string   :reset_password_token
-      # t.datetime :reset_password_sent_at
+      t.string   :reset_password_token
+      t.datetime :reset_password_sent_at
 
       ## Rememberable
-      # t.datetime :remember_created_at
+      t.datetime :remember_created_at
 
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false
@@ -40,8 +40,8 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.2]
       # t.timestamps null: false
     end
 
-    # add_index :users, :email,                unique: true
-    # add_index :users, :reset_password_token, unique: true
+    add_index :users, :email,                unique: true
+    add_index :users, :reset_password_token, unique: true
     # add_index :users, :confirmation_token,   unique: true
     # add_index :users, :unlock_token,         unique: true
   end

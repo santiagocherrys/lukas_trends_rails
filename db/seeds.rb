@@ -1,5 +1,9 @@
 History.destroy_all
 Currency.destroy_all
+User.destroy_all
+
+#create the admin user for application
+User.create!(full_name: "Lukas Palos", email: "laslukas@hotmail.com", password: "admin1234", password_confirmation: "admin1234", role: :ADMIN, subscription_type: :PREMIUM)
 
 currencies = [
   { name: 'COP', description: 'Peso Colombiano', symbol: 'COP' },
