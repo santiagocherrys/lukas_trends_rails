@@ -55,11 +55,12 @@
         </p>
       </div>
     </div>
-</div>
-<!-- Footer -->
-<footer class="absolute text-right bottom-0 bg-blue-400 px-4 py-2">
-  © 2025 LukasTrend. All rights reserved.
-</footer>
+  </div>
+
+  <!-- Footer -->
+  <footer class="absolute text-right bottom-0 bg-blue-400 px-4 py-2">
+    © 2025 LukasTrend. All rights reserved.
+  </footer>
 </div>
 
 <!-- Logic -->
@@ -80,7 +81,8 @@
     var myChart = echarts.init(chartDom);
 
     async function fetchHistoricalData(currency, startDate, endDate, periodId) {
-      const apiUrl = `http://<%= request.host %>:3000/api/v1/data/history2?currency=${currency}&period_id=${periodId}&time_start=${startDate}&time_end=${endDate}`;
+      const origin = window.location.origin
+      const apiUrl = `${origin}/api/v1/data/history2?currency=${currency}&period_id=${periodId}&time_start=${startDate}&time_end=${endDate}`;
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
