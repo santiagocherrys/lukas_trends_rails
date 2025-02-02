@@ -14,6 +14,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_235439) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "advertisements", force: :cascade do |t|
+    t.string "title"
+    t.string "image_url"
+    t.string "link"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "chats", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "question", limit: 255
