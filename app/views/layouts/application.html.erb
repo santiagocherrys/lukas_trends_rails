@@ -16,6 +16,7 @@
     <%= stylesheet_link_tag 'tailwind', 'inter-font', 'data-turbo-track': 'reload' %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+    <%= stylesheet_link_tag 'banner', 'data-turbo-track': 'reload' %>
     <%= javascript_importmap_tags %>
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js">
     </script>
@@ -58,6 +59,7 @@
       </div>
     </nav>
     <%= yield %>
+    <%= render 'ad_banner/banner' %>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js"></script>
 </html>
