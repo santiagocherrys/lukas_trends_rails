@@ -58,9 +58,11 @@
   </div>
 
   <!-- Footer -->
-  <footer class="absolute text-right bottom-0 bg-blue-400 px-4 py-2">
-    © 2025 LukasTrend. All rights reserved.
-  </footer>
+  <% if user_signed_in? and current_user.subscription_type == "PREMIUM" %>
+    <footer class="absolute text-right bottom-0 bg-blue-400 px-4 py-2">
+      © 2025 LukasTrend. All rights reserved.
+    </footer>
+  <% end %>
 </div>
 
 <!-- Logic -->
