@@ -101,12 +101,8 @@
 
     const { dates, values: USD } = await fetchHistoricalData('COP', startDate, endDate, periodId);
     const { dates: d1, values: EUR } = await fetchHistoricalData('EUR', startDate, endDate, periodId);
-    const { dates: d2, values: rawBTC } = await fetchHistoricalData('BTC', startDate, endDate, periodId);
-    const { dates: d3, values: rawETH } = await fetchHistoricalData('ETH', startDate, endDate, periodId);
-
-    // Dividir cada valor entre 1000
-    const BTC = rawBTC.map(value => value / 1000);
-    const ETH = rawETH.map(value => value / 1000);
+    const { dates: d2, values: BTC } = await fetchHistoricalData('BTC', startDate, endDate, periodId);
+    const { dates: d3, values: ETH } = await fetchHistoricalData('ETH', startDate, endDate, periodId);
 
     if (loader.parentElement) loader.remove();
 
