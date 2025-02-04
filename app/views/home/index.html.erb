@@ -88,16 +88,23 @@
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        return { dates: data.dates, values: data.values };
+        const aiResponse = await sendToOpenAI(data, startDate, endDate);
+        const mergedData = mergeHistoricalAndPredictedData(data, aiResponse);
+        return { dates: mergedData.dates, values: mergedData.values };
       } catch (error) {
         console.error("Error fetching historical data:", error);
         return { dates: [], values: [] };
       }
     }
 
-    const startDate = "2020-01-24";
-    const endDate = "2025-01-24";
+    const today = new Date();
+    const fiveYearsAgo = new Date();
+    fiveYearsAgo.setFullYear(today.getFullYear() - 5);
+
+    const startDate = getFormattedDate(fiveYearsAgo);
+    const endDate = getFormattedDate(today);
     const periodId = "year";
+    
 
     const { dates, values: USD } = await fetchHistoricalData('COP', startDate, endDate, periodId);
     const { dates: d1, values: EUR } = await fetchHistoricalData('EUR', startDate, endDate, periodId);
@@ -247,6 +254,106 @@
 
     myChart.setOption(option);
 
+    function getFormattedDate(date) { 
+      return date.toLocaleDateString("en-CA"); // Formato YYYY-MM-DD sin cambiar zona horaria
+    }
+
+    function mergeHistoricalAndPredictedData(historicalData, aiResponse) {
+  try {
+    // Extraer el contenido generado por OpenAI
+    const content = aiResponse.choices?.[0]?.message?.content || "";
+    
+    // Buscar el bloque JSON dentro del contenido (predicciones)
+    const jsonMatch = content.match(/\{[\s\S]*?\}/);
+    if (!jsonMatch) {
+      console.error("No se encontró un JSON válido en la respuesta de OpenAI.");
+      return historicalData; // Devuelve solo los datos históricos si no hay predicciones
+    }
+
+    // Convertir el JSON extraído en un objeto
+    const predictedData = JSON.parse(jsonMatch[0]);
+
+    // Unir las fechas y los valores de los datos históricos y de las predicciones
+    return {
+      dates: [...historicalData.dates, ...predictedData.dates],
+      values: [...historicalData.values, ...predictedData.values]
+    };
+
+  } catch (error) {
+    console.error("Error al fusionar datos:", error);
+    return historicalData; // Devuelve solo los datos históricos en caso de error
+  }
+}
+
+
+
+
+
+    async function sendToOpenAI(data, startDate, endDate) {
+      const openaiApiKey = "TU_CLAVE_OPENAI"; 
+      const openaiApiUrl = "https://api.openai.com/v1/chat/completions";
+
+      const prompt = `
+    Eres un asistente que genera exclusivamente respuestas en formato JSON.
+    Nunca incluyas explicaciones, texto adicional o comentarios.
+    
+    Analiza los siguientes datos históricos de la moneda en el período del ${startDate} al ${endDate}:
+
+    **Datos históricos:**
+    ${JSON.stringify(data, null, 2)}
+
+    **Formato estricto de salida (sin texto adicional):**
+    {
+      "dates": ["YYYY-MM-DD", "YYYY-MM-DD", ...],
+      "values": ["X.XX", "X.XX", ...]
+    }
+
+    **Ejemplo de salida correcta:**
+    {
+      "dates": ["2025-01-25", "2025-01-26", "2025-01-27"],
+      "values": ["4.36", "4.34", "4.32"]
+    }
+
+    **IMPORTANTE:** Devuelve SOLO el JSON sin texto adicional.
+  `;
+
+      try {
+        const response = await fetch(openaiApiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // "Authorization": `Bearer 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/AlejoAgrefo esto`
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo", // O usa "gpt-3.5-turbo"
+            messages: [ { role: "system", content: "Responde únicamente con JSON sin texto adicional." },
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.3
+          })
+        });
+
+        const aiData = await response.json();
+        const rawResponse = aiData.choices?.[0]?.message?.content;
+
+    if (!rawResponse) {
+      console.error("OpenAI no devolvió una respuesta válida");
+      return { dates: [], values: [] };
+    }
+
+    // Intentar convertir la respuesta en JSON
+    try {
+      return JSON.parse(rawResponse);
+    } catch (error) {
+      console.error("Error al parsear JSON de OpenAI:", error);
+      return { dates: [], values: [] };
+    }
+
+  } catch (error) {
+    console.error("Error al comunicarse con OpenAI:", error);
+    return { dates: [], values: [] };
+  }
+  }
      // Attach event listeners for the new inputs
         document.querySelector("#periodId").addEventListener("change", handleUpdate);
         document.querySelector("#startDate").addEventListener("change", handleUpdate);

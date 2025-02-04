@@ -115,6 +115,7 @@ GEM
       rubocop (>= 1)
       smart_properties
     erubi (1.13.1)
+    event_stream_parser (1.0.0)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.4)
@@ -126,6 +127,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
+    faraday-multipart (1.1.0)
+      multipart-post (~> 2.0)
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
     globalid (1.2.1)
@@ -163,6 +166,7 @@ GEM
     msgpack (1.7.5)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
+    multipart-post (2.4.1)
     net-http (0.6.0)
       uri
     net-imap (0.5.5)
@@ -313,6 +317,10 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.52.0, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
+    ruby-openai (7.3.1)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
     smart_properties (1.17.0)
@@ -390,10 +398,10 @@ DEPENDENCIES
   faraday
   importmap-rails
   jbuilder
+  nokogiri
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection (~> 1.0)
-  nokogiri
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.2.2, >= 7.2.2.1)
@@ -401,6 +409,7 @@ DEPENDENCIES
   rubocop
   rubocop-erb (~> 0.5.5)
   rubocop-rails
+  ruby-openai (~> 7.3)
   sprockets-rails
   stimulus-rails
   tailwindcss-rails

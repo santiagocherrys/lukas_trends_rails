@@ -80,3 +80,5 @@ gem 'whenever', :require => false
 
 #Nokogori scraping
 gem 'nokogiri'
+
+gem "ruby-openai", "~> 7.3"

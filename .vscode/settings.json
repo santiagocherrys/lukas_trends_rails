@@ -10,5 +10,6 @@
     "editor.tabSize": 2,
     "editor.semanticHighlighting.enabled": true,
     "editor.wordSeparators": "`~@#$%^&*()-=+[{]}\\|;:'\",.<>/"
-  }
+  },
+  "CodeGPT.apiKey": "LM Studio"
 }
