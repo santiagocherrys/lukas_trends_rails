@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     put 'users' => 'users#change_user_subscription_type', as: :change_user_subscription_type
   end
 
+  post 'chats' => 'chats#create'
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
