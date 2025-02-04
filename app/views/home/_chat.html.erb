@@ -1,0 +1,18 @@
+<div class="flex flex-col gap-4 mt-8">
+  <%# Question %>
+      <div id="question" class="self-end flex gap-3">
+        <% if question.present? %>
+          <%= image_tag(current_user&.avatar_url || asset_path('default-avatar.jpg'), class: "size-9 rounded-full") %>
+          <p class="max-w-64 bg-blue-600 text-white py-2 px-4 rounded-md"><%= question %> </p>
+        <% end %>
+      </div>
+  <%# Reply %>
+    <article id="reply" class="self-start flex items-center gap-3 py-2 px-4 rounded-md">
+      <% if reply.present? %>
+        <div class="size-10 rounded-full bg-white shrink-0 flex items-center justify-center border border-slate-200">
+          <%= image_tag(asset_path('logo.png'), class: "w-6") %>
+        </div>
+        <p><%= reply %></p>
+      <% end %>
+    </article>
+</div>

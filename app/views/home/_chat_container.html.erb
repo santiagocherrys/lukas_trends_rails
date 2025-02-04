@@ -1,0 +1,21 @@
+<div class="relative p-5 grid place-content-center h-full min-h-[50vh] md:min-h-[70vh]">
+  <video class="cursor-pointer w-28 mx-auto" onclick="this.play(); this.muted = false; this.controls = false;">
+    <source src="animated-logo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <%# Chat %>
+  <%= turbo_frame_tag "chat" do %>
+    <%= render "chat", question: active_chat.question, reply: active_chat.reply %>
+  <% end %>
+  <%# Chat textarea %>
+  <%= form_with(model: new_chat, class: "absolute bottom-0 right-0 left-0 pt-2 grid border border-slate-200 rounded-md p-2 ring-blue-400 focus-within:ring") do |form| %>
+    <%= form.text_area :question, placeholder: "What currency would you like to forecast?...", class: "w-full p-3 resize-none focus-visible:outline-none" %>
+    <div class="flex justify-end">
+      <%= form.button class: "bg-blue-600 p-3 rounded-lg" do |text| %>
+        <%= content_tag :span, text, class: "sr-only" %>
+        <%= render "send_icon" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -37,20 +37,6 @@ body {
   color: #0066ff;
 }
 
-.main-home {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 70vh;
-}
-
-.chart {
-  flex: 1;
-  padding-right: 20px;
-  position: relative;
-  max-width: 60vw;
-}
-
 .chart-placeholder {
   height: 300px;
   display: flex;

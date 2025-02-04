@@ -1,0 +1,21 @@
+<button
+  data-sidebar-target="toggle"
+  aria-controls="sidebar"
+  aria-expanded="true"
+  data-action="click->sidebar#toggle"
+  class="absolute top-20 md:top-14 -left-6 -translate-x-1/2 -translate-y-1/2 p-2 bg-white rounded hover:bg-slate-100/80">
+  <span class="sr-only">Toggle sidebar</span>
+  <%# Close icon %>
+  <svg data-sidebar-target="closeIcon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12.6667 2H3.33333C2.59695 2 2 2.59695 2 3.33333V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V3.33333C14 2.59695 13.403 2 12.6667 2Z" stroke="#475569" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M10 2V14" stroke="#475569" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M5.3335 6L7.3335 8L5.3335 10" stroke="#475569" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  <%# Open icon %>
+  <%# Sidebar opened by default => Open icon hidden (`class="hidden"`) %>
+  <svg data-sidebar-target="openIcon" aria-hidden="true" class="hidden" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12.6667 2H3.33333C2.59695 2 2 2.59695 2 3.33333V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V3.33333C14 2.59695 13.403 2 12.6667 2Z" stroke="#475569" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M10 2V14" stroke="#475569" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M6.6665 10L4.6665 8L6.6665 6" stroke="#475569" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</button>

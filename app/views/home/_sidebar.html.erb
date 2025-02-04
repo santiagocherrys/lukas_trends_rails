@@ -1,0 +1,23 @@
+<% if user_signed_in? %>
+  <aside data-controller="sidebar" class="flex fixed z-10 top-0 bottom-0 right-0 md:h-[calc(100svh-theme(spacing.28))] my-auto md:relative">
+    <%# Sidebar opened by default: `w-72` %>
+    <div data-sidebar-target="sidebar" id="sidebar" class="w-72 transition-[width] bg-white border-b border-t border-l border-slate-200 rounded-s-xl">
+      <div class="py-6 px-2.5 flex flex-col gap-4">
+        <h2 class="text-xl font-semibold">Chats</h2>
+        <ul class="flex flex-col gap-2">
+          <% if chats.length > 1 %>
+            <% chats.each do |chat| %>
+              <% if chat.question %>
+                <%= render "chat_list_item", chat: %>
+              <% end %>
+            <% end %>
+          <% else %>
+            <li class="py-5 px-4 bg-slate-50 text-slate-600 border border-slate-200 italic rounded-md">No chats yet</li>
+          <% end %>
+        </ul>
+
+    </div>
+    <%# Toggle button %>
+    <%= render "sidebar_toggle" %>
+  </aside>
+<% end %>
