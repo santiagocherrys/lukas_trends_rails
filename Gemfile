@@ -54,7 +54,7 @@ group :development do
   gem 'rubocop', require: false
   # [https://github.com/rubocop/rubocop-rails?tab=readme-ov-file]
   gem 'erb_lint', require: false
-  gem 'rubocop-erb', '~> 0.5.5'
+  gem 'rubocop-erb', '~> 0.6.0'
   gem 'rubocop-rails', require: false
 end
 
